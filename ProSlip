@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>ProSlip · prediction club</title>
+    <!-- Tailwind via CDN + custom layer -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Telegram WebApp SDK -->
+    <script src="https://telegram.org/js/telegram-web-app.js?56"></script>
+    <!-- Font Awesome 6 (free) for clean icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- smooth fonts -->
+    <style>
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: #0a0c0f;
+            color: #edf2f7;
+            margin: 0;
+            padding: 0;
+            overscroll-behavior: none;
+        }
+        /* custom glass + neon accents */
+        .glass-card {
+            background: rgba(18, 22, 28, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(48, 56, 68, 0.6);
+            border-radius: 24px;
+            box-shadow: 0 8px 24px -6px rgba(0,0,0,0.5);
+            transition: transform 0.2s ease, border-color 0.15s;
+        }
+        .glass-card:hover {
+            border-color: #3bff99;
+        }
+        .neon-green {
+            color: #baff7f;
+            text-shadow: 0 0 6px rgba(74, 255, 134, 0.4);
+        }
+        .neon-border {
+            border: 1px solid #3aff8b;
+            box-shadow: 0 0 12px rgba(0, 255, 153, 0.25);
+        }
+        .btn-neon {
+            background: rgba(30, 50, 40, 0.9);
+            border: 1px solid #29e67a;
+            color: #ebfff0;
+            backdrop-filter: blur(4px);
+            transition: all 0.15s;
+            font-weight: 600;
+            border-radius: 40px;
+            padding: 10px 18px;
+        }
+        .btn-neon:active {
+            background: #1a5532;
+            border-color: #b1ffb1;
+            transform: scale(0.97);
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        /* premium anti-inspect blur (basic deterrent) */
+        .protected-code {
+            user-select: none;
+            -webkit-user-select: none;
+            background: #0f1218;
+            letter-spacing: 1px;
+        }
+        /* for result profit tag */
+        .profit-badge {
+            background: rgba(36, 255, 100, 0.15);
+            border-radius: 100px;
+            padding: 4px 12px;
+            border: 1px solid rgba(72, 255, 122, 0.4);
+            color: #ccffb0;
+        }
+        /* mock hidden ad overlay effect */
+        .ad-overlay {
+            background: radial-gradient(circle at 30% 30%, #182018, #0b0e0b);
+        }
+        [contenteditable="true"] {
+            outline: none;
+            border-bottom: 2px dashed #4aff79;
+        }
+        .vip-badge {
+            background: linear-gradient(145deg, #ffd966, #ffbe2e);
+            color: black;
+        }
+    </style>
+</head>
+<body class="bg-[#0a0c0f] text-gray-200 antialiased hide-scrollbar">
+
+<div id="telegram-channel-check" class="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/90 backdrop-blur-md hidden">
+    <div class="glass-card w-full max-w-sm p-8 text-center border border-red-500/30">
+        <i class="fa-solid fa-circle-exclamation text-4xl text-[#ff8866] mb-4"></i>
+        <h2 class="text-2xl font-bold neon-green">join channel</h2>
+        <p class="text-gray-300 mt-2 text-sm">You must subscribe to our Telegram channel to use ProSlip.</p>
+        <div class="mt-6 flex flex-col gap-3">
+            <a href="https://t.me/proslip_channel" class="btn-neon w-full block py-3 bg-[#2e7b5a]/80"><i class="fa-brands fa-telegram mr-2"></i>Join @proslip_channel</a>
+            <button id="force-check-subscription" class="text-sm text-gray-400 underline mt-2">✅ I've subscribed</button>
+        </div>
+    </div>
+</div>
+
+<!-- main app (hidden by default until sub check passes) -->
+<div id="proslip-app" class="hidden max-w-2xl mx-auto px-4 py-5 pb-24 relative">
+
+    <!-- header brand -->
+    <div class="flex items-center justify-between mt-2 mb-6">
+        <div class="flex items-center gap-2">
+            <div class="w-10 h-10 rounded-2xl bg-[#1a3a2a] flex items-center justify-center neon-border">
+                <i class="fa-solid fa-ticket text-2xl text-[#baff7f]"></i>
+            </div>
+            <div>
+                <h1 class="text-3xl font-bold tracking-tight neon-green">ProSlip<span class="text-xs align-top ml-1 px-2 py-0.5 bg-gray-800 rounded-full text-gray-300">beta</span></h1>
+                <p class="text-xs text-gray-400 -mt-1">unlock · predict · profit</p>
+            </div>
+        </div>
+        <div class="bg-gray-800/60 px-3 py-1.5 rounded-full text-xs flex items-center gap-1 border border-gray-600">
+            <i class="fa-regular fa-circle-check text-green-400"></i> <span id="user-status">subscribed</span>
+        </div>
+    </div>
+    
+    <!-- premium nav sections (modern glass) -->
+    <div class="grid grid-cols-4 gap-2 mb-6 text-center">
+        <div class="glass-card py-3 px-1 flex flex-col items-center active:scale-95 transition">
+            <i class="fa-solid fa-crown text-xl text-yellow-300 mb-1"></i>
+            <span class="text-[10px] sm:text-xs font-medium">Premium</span>
+        </div>
+        <div class="glass-card py-3 px-1 flex flex-col items-center active:scale-95 transition border-[#3aff8b]/40">
+            <i class="fa-solid fa-chart-line text-xl text-[#aaffaa] mb-1"></i>
+            <span class="text-[10px] sm:text-xs font-medium">Free Tips</span>
+        </div>
+        <div class="glass-card py-3 px-1 flex flex-col items-center active:scale-95 transition" id="nav-results">
+            <i class="fa-solid fa-rectangle-list text-xl text-blue-300 mb-1"></i>
+            <span class="text-[10px] sm:text-xs font-medium">Results</span>
+        </div>
+        <div class="glass-card py-3 px-1 flex flex-col items-center bg-gradient-to-br from-[#1f3a2a] to-[#0f1f16] border-2 border-[#baff7f]/30">
+            <i class="fa-solid fa-star text-xl text-amber-300 mb-1"></i>
+            <span class="text-[10px] sm:text-xs font-bold text-white">VIP</span>
+        </div>
+    </div>
+    
+    <!-- admin panel (toggle with lock icon for demo, hidden by default for normal users) -->
+    <div id="admin-panel" class="glass-card p-5 mb-7 border border-purple-500/30 relative">
+        <div class="flex justify-between items-center mb-3">
+            <div class="flex gap-2 items-center">
+                <i class="fa-solid fa-shield-honed text-purple-300"></i>
+                <span class="font-semibold text-purple-200">Admin · slip control</span>
+            </div>
+            <span class="text-[10px] bg-gray-900 px-3 py-1 rounded-full text-gray-300">editor mode</span>
+        </div>
+        <!-- add slip form -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
+            <input type="text" id="new-matchCount" placeholder="matches" class="bg-gray-900/70 border border-gray-700 rounded-lg px-3 py-2 text-white placeholder-gray-500">
+            <input type="text" id="new-odds" placeholder="total odds" class="bg-gray-900/70 border border-gray-700 rounded-lg px-3 py-2">
+            <button id="add-slip-btn" class="btn-neon col-span-1 bg-[#245f3e] border-[#37ec7a]"><i class="fa-solid fa-plus mr-1"></i>Add slip</button>
+            <button id="toggle-admin-hint" class="text-gray-400 text-[10px] italic">(click edit to change status)</button>
+        </div>
+        <p class="text-[10px] text-gray-400 mt-2">* tap on status, match count or odds to edit, then press "update"</p>
+    </div>
+
+    <!-- main slip container: PREMIUM SLIPS (locked, need ad) -->
+    <div class="mb-6">
+        <div class="flex justify-between items-center">
+            <h2 class="text-xl font-semibold flex items-center gap-2"><span class="w-1.5 h-6 bg-[#29e67a] rounded-full"></span> Premium slips</h2>
+            <span class="text-xs text-gray-400">🔒 unlock with ad</span>
+        </div>
+        <!-- dynamic slips injected from JS -->
+        <div id="premium-slips-container" class="mt-3 space-y-4"></div>
+    </div>
+    
+    <!-- FREE TIPS (example public) + Results preview (will show also result page content) -->
+    <div id="free-tips-section" class="mb-7">
+        <div class="flex items-center gap-2 mb-2">
+            <i class="fa-regular fa-lightbulb text-[#bcff7c]"></i>
+            <h2 class="text-lg font-medium">Free community tips</h2>
+        </div>
+        <div class="glass-card p-4 flex justify-between items-center">
+            <div>
+                <span class="text-sm opacity-80">⭐ BTTS & Over 1.5</span>
+                <p class="text-xs text-gray-400">Both teams to score — 1.82 odds</p>
+            </div>
+            <span class="text-sm font-mono bg-black/40 px-4 py-2 rounded-full">FREE</span>
+        </div>
+    </div>
+    
+    <!-- RESULTS PAGE content (toggled via JS) -->
+    <div id="results-page-view" class="hidden mb-20">
+        <div class="flex items-center gap-2 border-b border-gray-800 pb-3">
+            <i class="fa-solid fa-trophy text-2xl text-amber-300"></i>
+            <h2 class="text-2xl font-semibold">results & profit</h2>
+        </div>
+        <div id="results-list" class="mt-4 space-y-3"></div>
+    </div>
+    
+    <!-- VIP access teaser -->
+    <div class="glass-card p-5 mt-2 flex items-center justify-between bg-gradient-to-r from-[#14201b] to-[#0e191e]">
+        <div>
+            <span class="text-xs uppercase tracking-wider text-gray-400">VIP access</span>
+            <p class="font-semibold">Early bets · 2.40+ odds</p>
+        </div>
+        <div class="flex items-center gap-2">
+            <span class="bg-amber-400/20 border border-amber-400 px-4 py-2 rounded-full text-sm">🔓 subscribe</span>
+        </div>
+    </div>
+    
+    <!-- hidden protected area for copy (basic anti inspect) -->
+    <div style="display:none;">sensitive mapping</div>
+</div>
+
+<script>
+    (function() {
+        // ---------- TELEGRAM WEBAPP INIT ----------
+        const tg = window.Telegram?.WebApp;
+        if (tg) {
+            tg.expand();
+            tg.disableVerticalSwipes();
+            tg.setHeaderColor?.( '#0a0c0f' );
+            tg.setBottomBarColor?.('#0a0c0f');
+        }
+        
+        // ---------- GLOBAL STATE / MOCK DB (MongoDB mimic) ----------
+        // In real app this is fetched from Node.js backend; here we store locally.
+        let slipsData = [
+            { id: 'SLIP-0X7F', totalOdds: 3.45, matchCount: 4, status: 'Pending', code: 'PS-4N92K-D', unlocked: false, profit: null, result: null },
+            { id: 'SLIP-9A2C', totalOdds: 2.18, matchCount: 2, status: 'Pending', code: 'WIN-82HX-P', unlocked: false, profit: null, result: null },
+            { id: 'SLIP-B44M', totalOdds: 5.02, matchCount: 6, status: 'Won', code: 'LOCK-7S-F9', unlocked: true, profit: '+2.44', result: '2-1-3' },
+        ];
+        
+        // ---------- TELEGRAM CHANNEL SUBSCRIPTION MOCK (force check) ----------
+        const channelCheckDiv = document.getElementById('telegram-channel-check');
+        const mainApp = document.getElementById('proslip-app');
+        // by default we simulate not subscribed? For demo we hide sub check but we add logic: click "I've subscribed"
+        // start with hidden main app and show channel wall (better UX)
+        mainApp.classList.add('hidden');
+        channelCheckDiv.classList.remove('hidden');
+        
+        // subscription bypass (simulate real check)
+        document.getElementById('force-check-subscription').addEventListener('click', function() {
+            // in real app we call tg and verify, here we just hide overlay and show app.
+            channelCheckDiv.classList.add('hidden');
+            mainApp.classList.remove('hidden');
+            // mock telegram haptic
+            if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
+        });
+        
+        // additionally, if we assume already subscribed? we need default test: better to simulate
+        // add a tiny shortcut: double click header to bypass (for demo)
+        // but we keep the mandatory flow: by default visible channel wall. We also provide "I've subscribed"
+        
+        // ---------- DOM ELEMENTS RENDERING ----------
+        const premiumContainer = document.getElementById('premium-slips-container');
+        const resultsDiv = document.getElementById('results-list');
+        const resultsPage = document.getElementById('results-page-view');
+        
+        // ---------- helper: render all premium slips ----------
+        function renderPremiumSlips() {
+            if (!premiumContainer) return;
+            let html = '';
+            slipsData.forEach((slip, index) => {
+                // only show premium style for all (demo)
+                const isUnlocked = slip.unlocked === true;
+                const statusColor = slip.status === 'Won' ? 'text-green-300' : (slip.status === 'Lost' ? 'text-red-300' : 'text-yellow-300');
+                const statusBg = slip.status === 'Won' ? 'bg-green-900/30' : (slip.status === 'Lost' ? 'bg-red-900/30' : 'bg-yellow-900/30');
+                
+                html += `<div class="glass-card p-5 relative transition-all duration-200 hover:border-[#4aff79]/50" data-slip-index="${index}">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="text-xs text-gray-400">Slip ID</span>
+                            <p class="font-mono text-sm font-bold tracking-wider flex items-center gap-2">${slip.id} 
+                                <span class="text-[10px] px-2 py-0.5 rounded-full ${statusBg} ${statusColor}">${slip.status}</span>
+                            </p>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-xs text-gray-400">Total odds</span>
+                            <p class="text-xl font-bold neon-green">${slip.totalOdds}</p>
+                        </div>
+                    </div>
+                    <div class="flex justify-between items-center mt-2">
+                        <span class="text-sm"><i class="fa-regular fa-clock mr-1"></i>${slip.matchCount} matches</span>
+                        ${ slip.profit ? `<span class="profit-badge text-xs"><i class="fa-solid fa-coins mr-1"></i>profit ${slip.profit}</span>` : '' }
+                    </div>
+                    <!-- hidden code area / unlock button -->
+                    <div class="mt-4 flex flex-wrap items-center gap-3 justify-between">
+                        ${ !isUnlocked ? 
+                            `<button class="btn-neon unlock-btn text-sm w-full sm:w-auto flex-1 justify-center" data-index="${index}">
+                                <i class="fa-solid fa-play mr-1"></i> Unlock with ad
+                             </button>` : 
+                            `<div class="protected-code flex-1 bg-gray-900 rounded-2xl px-5 py-3 font-mono text-md border border-[#baff7f] flex justify-between items-center">
+                                <span id="code-${index}" class="tracking-widest text-[#d4ffa2]">${slip.code}</span>
+                                <button class="copy-btn text-gray-300 hover:text-white text-lg ml-2" data-code="${slip.code}"><i class="fa-regular fa-copy"></i></button>
+                            </div>`
+                        }
+                    </div>
+                    <!-- admin inline editable fields (visible only in admin, but we always show small edit icons for demo) -->
+                    <div class="mt-4 pt-2 border-t border-gray-800/60 text-xs flex flex-wrap items-center gap-3 text-gray-400 admin-edit-section">
+                        <span class="flex items-center gap-1"><i class="fa-regular fa-pen-to-square text-[10px]"></i> edit: </span>
+                        <span class="flex items-center">
+                            status: 
+                            <span contenteditable="true" class="editable-status px-2 py-0.5 rounded bg-gray-800/60 ml-1" data-field="status" data-index="${index}">${slip.status}</span>
+                        </span>
+                        <span class="flex items-center">
+                            odds: 
+                            <span contenteditable="true" class="editable-odds px-2 py-0.5 rounded bg-gray-800/60 ml-1" data-field="odds" data-index="${index}">${slip.totalOdds}</span>
+                        </span>
+                        <span class="flex items-center">
+                            matches: 
+                            <span contenteditable="true" class="editable-mc px-2 py-0.5 rounded bg-gray-800/60 ml-1" data-field="matchCount" data-index="${index}">${slip.matchCount}</span>
+                        </span>
+                        <button class="update-slip-btn text-white bg-[#2e6b4a] px-3 py-1 rounded-full text-[10px]" data-index="${index}">update</button>
+                        <button class="replace-result-btn text-white bg-[#3a506e] px-3 py-1 rounded-full text-[10px]" data-index="${index}">➕ set result</button>
+                    </div>
+                </div>`;
+            });
+            premiumContainer.innerHTML = html;
+            
+            // attach unlock events
+            document.querySelectorAll('.unlock-btn').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    const idx = this.dataset.index;
+                    // simulate Monteg Rewarded Ad
+                    if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('heavy');
+                    // fake ad overlay / show ad
+                    this.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i> watching ad...';
+                    setTimeout(() => {
+                        // ad success: reveal code and set unlocked = true
+                        slipsData[idx].unlocked = true;
+                        // optional: replace slip code if won/loss? no.
+                        renderPremiumSlips();
+                        renderResultsView(); // update results page
+                        if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred?.('success');
+                    }, 1500);
+                });
+            });
+            
+            // copy to clipboard
+            document.querySelectorAll('.copy-btn').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const code = this.dataset.code;
+                    navigator.clipboard?.writeText(code).then(() => {
+                        if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
+                        alert('📋 Code copied: ' + code); 
+                    });
+                });
+            });
+            
+            // admin update button (edit status, odds, match count)
+            document.querySelectorAll('.update-slip-btn').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    const idx = this.dataset.index;
+                    const slip = slipsData[idx];
+                    // get adjacent editable fields within same card
+                    const card = this.closest('.glass-card');
+                    const newStatus = card.querySelector('.editable-status')?.innerText.trim() || slip.status;
+                    const newOdds = parseFloat(card.querySelector('.editable-odds')?.innerText.trim()) || slip.totalOdds;
+                    const newMatch = parseInt(card.querySelector('.editable-mc')?.innerText.trim()) || slip.matchCount;
+                    
+                    slipsData[idx].status = newStatus;
+                    slipsData[idx].totalOdds = newOdds;
+                    slipsData[idx].matchCount = newMatch;
+                    // if status won we can add profit mock
+                    if (newStatus === 'Won' && !slipsData[idx].profit) {
+                        slipsData[idx].profit = '+' + (slip.totalOdds * 0.7).toFixed(2);
+                    }
+                    renderPremiumSlips();
+                    renderResultsView();
+                });
+            });
+            
+            // replace result (mock: replace slip code with result)
+            document.querySelectorAll('.replace-result-btn').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    const idx = this.dataset.index;
+                    const newResult = prompt('Enter match result (e.g., 2-1) or code:', slipsData[idx].code);
+                    if (newResult) {
+                        slipsData[idx].code = newResult;
+                        slipsData[idx].result = newResult;
+                        slipsData[idx].unlocked = true; // reveal after replace
+                        renderPremiumSlips();
+                        renderResultsView();
+                    }
+                });
+            });
+        }
+        
+        // ---------- render results page (profit / won/lost) ----------
+        function renderResultsView() {
+            if (!resultsDiv) return;
+            let resHtml = '';
+            slipsData.filter(s => s.status === 'Won' || s.status === 'Lost').forEach(slip => {
+                resHtml += `<div class="glass-card p-4 flex justify-between items-center border-l-8 ${slip.status === 'Won' ? 'border-green-500' : 'border-red-500'}">
+                    <div>
+                        <p class="font-mono text-sm">${slip.id}</p>
+                        <span class="text-xs text-gray-400">status: <span class="${slip.status === 'Won' ? 'text-green-300' : 'text-red-300'}">${slip.status}</span></span>
+                        <p class="text-sm mt-1">code: ${slip.code || '—'}</p>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-lg font-bold neon-green">${slip.totalOdds}</span>
+                        ${ slip.profit ? `<div class="profit-badge text-xs mt-1">📈 ${slip.profit}</div>` : '' }
+                    </div>
+                </div>`;
+            });
+            if (resHtml === '') resHtml = '<div class="text-gray-500 italic text-center py-8">No results yet. Slips will appear when Won/Lost.</div>';
+            resultsDiv.innerHTML = resHtml;
+        }
+        
+        // ------ add new slip (admin) ------
+        document.getElementById('add-slip-btn')?.addEventListener('click', function() {
+            const matches = document.getElementById('new-matchCount').value || '3';
+            const odds = document.getElementById('new-odds').value || '2.10';
+            const newId = 'SLIP-' + Math.random().toString(36).substring(2, 6).toUpperCase();
+            const newSlip = {
+                id: newId,
+                totalOdds: parseFloat(odds) || 2.0,
+                matchCount: parseInt(matches) || 2,
+                status: 'Pending',
+                code: 'CODE-' + Math.random().toString(36).substring(2,8).toUpperCase(),
+                unlocked: false,
+                profit: null
+            };
+            slipsData.push(newSlip);
+            renderPremiumSlips();
+            renderResultsView();
+        });
+        
+        // ------ navigation toggle for results ------
+        document.getElementById('nav-results')?.addEventListener('click', function() {
+            resultsPage.classList.toggle('hidden');
+            // scroll to results
+            resultsPage.scrollIntoView({ behavior: 'smooth' });
+            renderResultsView();
+        });
+        
+        // ------ default initialization ------
+        renderPremiumSlips();
+        renderResultsView();
+        
+        // ------ prevent inspect / right click copy on code areas (basic) ------
+        document.addEventListener('contextmenu', function(e) {
+            if (e.target.classList.contains('protected-code') || e.target.closest('.protected-code')) {
+                e.preventDefault(); return false;
+            }
+        });
+        
+        // anti devtools (simple)
+        setInterval(() => {
+            if (window.outerWidth - window.innerWidth > 100 || window.outerHeight - window.innerHeight > 100) {
+                // optional: but we do nothing to not annoy
+            }
+        }, 1000);
+        
+        // ------ extra: dark glass vip etc ------
+        // simulated monetg rewarded ad is above.
+    })();
+</script>
+
+<!-- bottom padding note: mobile optimized -->
+<div class="text-center text-[10px] text-gray-600 mt-6 pb-6">ProSlip · secure prediction hub</div>
+</body>
+</html>
