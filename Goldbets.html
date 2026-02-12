@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes"/>
+    <title>⚡ GoldBets – Premium Betting Tips (Dark)</title>
+  
+  <!-- Font Awesome 5 (icons for modern UI) -->
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"/>
+  
+  <style>
+    /* ----- DARK THEME + GOLD GRADIENT / MODERN UI ----- */
+    :root {
+      --black: #0b0a0c;
+      --dark-metal: #121212;
+      --card-bg: #1e1c1f;
+      --gold-light: #fddf8d;
+      --gold: #e5b13b;
+      --gold-gradient: linear-gradient(145deg, #f9c851 0%, #c98f1a 100%);
+      --gold-glow: rgba(229, 177, 59, 0.25);
+      --green-win: #2ba150;
+      --red-loss: #d93c4a;
+      --text-muted: #b9b5b0;
+      --border-dim: #3e3a3a;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background-color: var(--black);
+      background-image: radial-gradient(circle at 15% 5%, rgba(229,177,59,0.05) 0%, transparent 35%);
+      color: #ede7e0;
+      line-height: 1.6;
+      padding: 0;
+      margin: 0;
+    }
+
+    a {
+      text-decoration: none;
+      color: white;
+    }
+
+    /* ----- NAVIGATION (RESPONSIVE) ----- */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.2rem 5%;
+      background: rgba(10, 8, 12, 0.9);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(229, 177, 59, 0.25);
+      position: sticky;
+      top: 0;
+      z-index: 999;
+      flex-wrap: wrap;
+    }
+
+    .logo {
+      font-size: 1.9rem;
+      font-weight: 800;
+      background: var(--gold-gradient);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      letter-spacing: -0.5px;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2.2rem;
+      font-weight: 500;
+    }
+
+    .nav-links a {
+      color: #f0e6d2;
+      transition: 0.2s;
+      font-size: 1rem;
+      border-bottom: 2px solid transparent;
+      padding-bottom: 4px;
+    }
+
+    .nav-links a:hover {
+      color: var(--gold);
+      border-bottom-color: var(--gold);
+    }
+
+    .burger {
+      display: none;
+      font-size: 1.8rem;
+      color: var(--gold);
+      cursor: pointer;
+    }
+
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none;
+        width: 100%;
+        flex-direction: column;
+        align-items: center;
+        padding: 1.5rem 0 0.8rem;
+        gap: 1.2rem;
+      }
+      .nav-links.active {
+        display: flex;
+      }
+      .burger {
+        display: block;
+      }
+    }
+
+    /* ----- HERO SECTION (GOLD GLOW) ----- */
+    .hero {
+      padding: 3.5rem 5%;
+      background: linear-gradient(145deg, #0f0e13 20%, #1a171e 100%);
+      border-radius: 0 0 40px 40px;
+      box-shadow: inset 0 -10px 30px rgba(0,0,0,0.6), 0 10px 30px rgba(229,177,59,0.1);
+      margin-bottom: 2rem;
+    }
+
+    .hero-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .hero-text {
+      flex: 1 1 300px;
+    }
+
+    .hero-text h1 {
+      font-size: 2.8rem;
+      font-weight: 800;
+      background: linear-gradient(to right, #ffdb8e, #e5b13b, #fad675);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-bottom: 0.5rem;
+      line-height: 1.2;
+    }
+
+    .hero-highlight {
+      color: #e5b13b;
+      border-left: 6px solid #e5b13b;
+      padding-left: 18px;
+      font-size: 1.2rem;
+      margin-top: 1.2rem;
+      font-weight: 400;
+      background: rgba(229,177,59,0.08);
+      border-radius: 0 20px 20px 0;
+      display: inline-block;
+      padding: 0.9rem 1.5rem;
+    }
+
+    .win-rate-badge {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      background: rgba(0,0,0,0.45);
+      border-radius: 60px;
+      padding: 1rem 2rem;
+      margin-top: 1.8rem;
+      border: 1px solid rgba(229,177,59,0.4);
+      backdrop-filter: blur(8px);
+      flex-wrap: wrap;
+    }
+
+    .win-rate-number {
+      font-size: 3.2rem;
+      font-weight: 800;
+      background: var(--gold-gradient);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      line-height: 1;
+    }
+    .win-rate-label {
+      font-size: 1.1rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    .counter {
+      display: inline-block;
+    }
+
+    /* ----- CARD LAYOUT PREMIUM DARK ----- */
+    .container {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 1rem 5%;
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 1.9rem;
+      font-weight: 700;
+      margin: 2.2rem 0 1.5rem;
+      border-bottom: 2px solid var(--gold);
+      padding-bottom: 0.6rem;
+      width: fit-content;
+    }
+    .section-title i {
+      color: var(--gold);
+    }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 28px;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: 32px;
+      padding: 1.8rem 1.5rem;
+      border: 1px solid #3d362b;
+      box-shadow: 0 20px 30px -10px rgba(0,0,0,0.6);
+      transition: all 0.25s cubic-bezier(0.2, 0, 0, 1);
+      backdrop-filter: blur(4px);
+      background: linear-gradient(145deg, #1e1c1f, #171518);
+    }
+
+    .card:hover {
+      transform: translateY(-8px);
+      border-color: #e5b13b80;
+      box-shadow: 0 25px 35px -8px #e5b13b30;
+    }
+
+    .odds-badge {
+      background: #2a282c;
+      padding: 0.3rem 1rem;
+      border-radius: 50px;
+      display: inline-block;
+      color: var(--gold);
+      font-weight: 600;
+      margin: 0.8rem 0;
+    }
+
+    .tip-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 1.2rem;
+    }
+
+    .copy-code-btn {
+      background: transparent;
+      border: 1.5px solid var(--gold);
+      color: var(--gold);
+      padding: 0.5rem 1.3rem;
+      border-radius: 40px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .copy-code-btn:hover {
+      background: var(--gold-gradient);
+      color: black;
+      border-color: transparent;
+    }
+
+    .premium-locked, .premium-revealed {
+      transition: all 0.3s ease;
+    }
+
+    .premium-locked {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 2rem 1rem;
+    }
+
+    .unlock-btn {
+      background: var(--gold-gradient);
+      border: none;
+      color: black;
+      font-weight: 700;
+      padding: 1.1rem 2.4rem;
+      border-radius: 50px;
+      font-size: 1.3rem;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 1.2rem 0;
+      cursor: pointer;
+      box-shadow: 0 10px 20px rgba(229,177,59,0.3);
+      transition: all 0.2s;
+      border: 1px solid #ffd966;
+    }
+    .unlock-btn:hover {
+      transform: scale(1.03);
+      background: #fad258;
+    }
+
+    .premium-bet-slip {
+      background: radial-gradient(circle at top right, #2a241c, #131215);
+      border-left: 6px solid #e5b13b;
+      border-radius: 28px;
+    }
+
+    .bet-slip-highlight {
+      background: rgba(229,177,59,0.15);
+      padding: 1.2rem;
+      border-radius: 20px;
+      margin: 1.2rem 0 0.8rem;
+      border: 1px dashed var(--gold);
+    }
+
+    .total-odds {
+      font-size: 2rem;
+      font-weight: 800;
+      background: var(--gold-gradient);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      display: inline-block;
+      margin-left: 10px;
+    }
+
+    .result-badge {
+      display: inline-block;
+      padding: 0.4rem 1.2rem;
+      border-radius: 40px;
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 0.8rem;
+      letter-spacing: 1px;
+    }
+
+    .badge-win {
+      background: #1e4a2c;
+      color: #c5ffb0;
+      border-left: 5px solid var(--green-win);
+    }
+
+    .badge-loss {
+      background: #4a2429;
+      color: #ffc2c2;
+      border-left: 5px solid var(--red-loss);
+    }
+
+    .win-loss-control {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+      margin-top: 10px;
+    }
+
+    .admin-btn {
+      background: #333;
+      border: none;
+      color: white;
+      padding: 6px 16px;
+      border-radius: 30px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .btn-green { background: #1e6f3c; }
+    .btn-red { background: #9e2c34; }
+
+    .telegram-float {
+      position: fixed;
+      bottom: 30px;
+      right: 25px;
+      background: linear-gradient(45deg, #27a6e5, #1f8bc0);
+      color: white;
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.4rem;
+      box-shadow: 0 10px 25px #0088cc70;
+      z-index: 9999;
+      transition: 0.2s;
+      border: 2px solid white;
+    }
+    .telegram-float:hover {
+      transform: scale(1.1);
+      background: #27a6e5;
+    }
+
+    .payment-card {
+      background: #1a181c;
+      border-radius: 30px;
+      padding: 2rem;
+      border: 1px solid #564c3b;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .binance-logo {
+      background: #f0b90b;
+      color: black;
+      padding: 0.4rem 1.3rem;
+      border-radius: 40px;
+      font-weight: bold;
+      display: inline-block;
+    }
+
+    .footer {
+      margin-top: 4rem;
+      background: #0d0c0e;
+      padding: 2.5rem 5%;
+      border-top: 1px solid #413a30;
+      text-align: center;
+      color: #b1a9a0;
+    }
+    .social-icons {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin-bottom: 1.5rem;
+    }
+    .social-icons a {
+      background: #2b2727;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--gold);
+      font-size: 1.5rem;
+      transition: 0.2s;
+    }
+    .social-icons a:hover {
+      background: var(--gold);
+      color: black;
+    }
+
+    @media (max-width: 600px) {
+      .hero-text h1 { font-size: 2rem; }
+    }
+    .disclaimer {
+      background: #201e22;
+      padding: 1.4rem;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      color: #c6c1ba;
+      margin: 2.5rem 0 0;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- RESPONSIVE NAVIGATION (BLACK + GOLD) -->
+  <nav class="navbar">
+    <div class="logo"><i class="fas fa-trophy" style="color: #e5b13b; margin-right: 6px;"></i> GoldBets</div>
+    <div class="burger" id="burgerBtn"><i class="fas fa-bars"></i></div>
+    <div class="nav-links" id="navLinks">
+      <a href="#">Home</a>
+      <a href="#">Free Tips</a>
+      <a href="#">Premium</a>
+      <a href="#">Results</a>
+      <a href="#">Payment</a>
+    </div>
+  </nav>
+
+  <!-- HERO SECTION + animated win rate counter -->
+  <section class="hero">
+    <div class="hero-content">
+      <div class="hero-text">
+        <h1>WIN WITH GOLD</h1>
+        <p style="font-size: 1.4rem; color: #e2dccd;">#1 Premium betting tips</p>
+        <span class="hero-highlight"><i class="fas fa-bolt" style="color: #e5b13b;"></i> 91.4% win rate last 7 days</span>
+        
+        <!-- animated win rate counter -->
+        <div class="win-rate-badge">
+          <div>
+            <span class="win-rate-number"><span class="counter" id="winCounter">86</span>%</span>
+          </div>
+          <div class="win-rate-label">
+            <i class="fas fa-chart-line"></i> OVERALL WIN RATE<br>
+            <small style="font-weight: normal; color: #c4b59b;">(updated monthly)</small>
+          </div>
+        </div>
+      </div>
+      <div style="flex: 0.5; min-width: 130px;">
+        <i class="fas fa-crown" style="font-size: 7rem; color: #e5b13b80; opacity: 0.5;"></i>
+      </div>
+    </div>
+  </section>
+
+  <div class="container">
+    <!-- DAILY FREE TIPS SECTION (CARD GRID) -->
+    <div class="section-title">
+      <i class="fas fa-sun"></i> Daily Free Tips
+    </div>
+    <div class="card-grid">
+      <div class="card">
+        <div style="display: flex; justify-content: space-between;">
+          <span style="background: #333; padding: 5px 12px; border-radius: 30px; font-size: 0.8rem;">⚽ FOOTBALL</span>
+          <span><i class="fas fa-star" style="color: gold;"></i> 2.1</span>
+        </div>
+        <h3 style="margin: 15px 0 5px;">Real Madrid vs Barcelona</h3>
+        <div class="odds-badge">Odds: 2.05 - 3.40 - 3.10</div>
+        <p style="color: var(--text-muted);"><i class="fas fa-calendar"></i> Today 20:45</p>
+        <div class="tip-footer">
+          <span style="color: var(--gold); font-weight: 600;">BTTS Yes</span>
+          <button class="copy-code-btn" onclick="copyTipCode('RMvBAR23')"><i class="fas fa-copy"></i> Copy</button>
+        </div>
+      </div>
+      <div class="card">
+        <span style="background: #333; padding: 5px 12px; border-radius: 30px; font-size: 0.8rem;">🏀 NBA</span>
+        <h3 style="margin: 15px 0 5px;">Lakers @ Warriors</h3>
+        <div class="odds-badge">Odds: 1.95 - 2.10</div>
+        <p style="color: var(--text-muted);"><i class="fas fa-calendar"></i> Tomorrow 03:00</p>
+        <div class="tip-footer">
+          <span style="color: var(--gold);">Over 224.5</span>
+          <button class="copy-code-btn" onclick="copyTipCode('LALvGSW99')"><i class="fas fa-copy"></i> Copy</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PREMIUM BET SLIP (AD LOCKED) -->
+    <div class="section-title" style="margin-top: 3rem;">
+      <i class="fas fa-lock" id="premiumLockIcon"></i> Premium Bet Slip (Ad Locked)
+    </div>
+
+    <div class="card premium-bet-slip" id="premiumCard">
+      <!-- LOCKED STATE (visible by default) -->
+      <div id="premiumLockedState" class="premium-locked">
+        <i class="fas fa-lock" style="font-size: 3.8rem; color: #e5b13b; margin-bottom: 0.5rem;"></i>
+        <h2 style="color: #ffdb9e;">🔒 VIP Bet Slip Locked</h2>
+        <p style="margin-bottom: 0.5rem; color: #ddd;">Watch quick ad to unlock premium pick</p>
+        <button id="unlockAdBtn" class="unlock-btn">
+          <i class="fas fa-play-circle"></i> Unlock Bet Slip
+        </button>
+        <span style="font-size: 0.8rem; opacity: 0.7;">No spam, ad opens in new tab</span>
+      </div>
+
+      <!-- REVEALED STATE (hidden by default) -->
+      <div id="premiumRevealedState" class="premium-revealed" style="display: none;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <span style="background: #e5b13b; color: black; padding: 0.2rem 1.3rem; border-radius: 30px; font-weight: 700;">⭐ GOLD VIP</span>
+          <i class="fas fa-check-circle" style="color: #e5b13b; font-size: 1.7rem;"></i>
+        </div>
+        <div class="bet-slip-highlight">
+          <div style="display: flex; justify-content: space-between; flex-wrap: wrap;">
+            <span style="font-weight: 700; font-size: 1.3rem;">🏆 AC Milan vs Inter</span>
+            <span style="background: black; padding: 6px 16px; border-radius: 40px; color: #e5b13b;">ODDS <strong>2.85</strong></span>
+          </div>
+          <p style="margin-top: 12px;"><i class="fas fa-flag"></i> Match: Both teams to score + over 2.5</p>
+          <p style="display: flex; gap: 20px; flex-wrap: wrap;">
+            <span style="color: #e5b13b;">1X2: 2.85</span>
+            <span style="color: #e5b13b;">BTTS: 1.92</span>
+          </p>
+          <div style="display: flex; justify-content: space-between; align-items: baseline; margin-top: 10px;">
+            <span style="font-size: 1.3rem;">Total odds:</span>
+            <span class="total-odds">5.23</span>
+          </div>
+        </div>
+        <button class="copy-code-btn" style="width: 100%; justify-content: center; margin-top: 8px;" onclick="copyTipCode('PRM-ACMI23')">
+          <i class="fas fa-copy"></i> Copy Bet Code (PRM-ACMI23)
+        </button>
+        <p style="margin-top: 12px; font-size: 0.8rem; color: #c6b289;"><i class="fas fa-clock"></i> Valid until 22:00 today</p>
+      </div>
+    </div>
+
+    <!-- WIN/LOSS RESULT TRACKER (admin manual change) -->
+    <div class="section-title">
+      <i class="fas fa-list-check"></i> Win/Loss Result Tracker
+    </div>
+    <div class="card-grid">
+      <div class="card">
+        <div style="display: flex; justify-content: space-between;">
+          <span>⚽ Chelsea vs Liverpool</span>
+          <span id="resultBadge1" class="result-badge badge-win">WIN</span>
+        </div>
+        <p>Tip: Over 1.5 goals @1.75</p>
+        <div class="win-loss-control">
+          <button class="admin-btn btn-green" onclick="setResult('resultBadge1', 'WIN')">Mark WIN</button>
+          <button class="admin-btn btn-red" onclick="setResult('resultBadge1', 'LOSS')">Mark LOSS</button>
+        </div>
+      </div>
+      <div class="card">
+        <div style="display: flex; justify-content: space-between;">
+          <span>🏈 Chiefs vs Bills</span>
+          <span id="resultBadge2" class="result-badge badge-loss">LOSS</span>
+        </div>
+        <p>Tip: Chiefs -3.5 @1.92</p>
+        <div class="win-loss-control">
+          <button class="admin-btn btn-green" onclick="setResult('resultBadge2', 'WIN')">WIN</button>
+          <button class="admin-btn btn-red" onclick="setResult('resultBadge2', 'LOSS')">LOSS</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAYMENT GUIDE PAGE (Binance instructions) -->
+    <div class="section-title">
+      <i class="fas fa-coins"></i> Payment Guide – Binance
+    </div>
+    <div class="payment-card">
+      <div style="flex:1;">
+        <span class="binance-logo"><i class="fab fa-bitcoin"></i> BINANCE PAY</span>
+        <h2 style="color: #fddf8d; margin: 18px 0 10px;">Buy Premium with Binance</h2>
+        <p>1. Open Binance app → Pay <br>2. Enter Merchant ID: <strong>GoldBets@678</strong><br>3. Send exact USDT amount (BEP20)<br>4. Upload payment proof to @GoldBetsPaybot</p>
+        <div style="background: #2f2b29; padding: 0.9rem; border-radius: 16px; margin-top: 15px;">
+          <i class="fas fa-check-circle" style="color: #e5b13b;"></i> Network: BSC (BEP20) | Min: 25 USDT
+        </div>
+      </div>
+      <div style="flex:0 0 60px; text-align: center;">
+        <i class="fas fa-qrcode" style="font-size: 5rem; color: #e5b13b80;"></i>
+      </div>
+    </div>
+
+    <!-- Disclaimer section -->
+    <div class="disclaimer">
+      <i class="fas fa-exclamation-triangle" style="color: #e5b13b; margin-right: 8px;"></i> 
+      <strong>Disclaimer:</strong> Betting involves risk. This site is for educational purpose only. Ensure you comply with local laws. Not guaranteed profit. You must be 18+.
+    </div>
+  </div>
+
+  <!-- Footer with social links -->
+  <footer class="footer">
+    <div class="social-icons">
+      <a href="#"><i class="fab fa-telegram-plane"></i></a>
+      <a href="#"><i class="fab fa-twitter"></i></a>
+      <a href="#"><i class="fab fa-instagram"></i></a>
+      <a href="#"><i class="fab fa-discord"></i></a>
+    </div>
+    <p style="margin-bottom: 0.5rem;">© 2025 GoldBets. Premium betting insights.</p>
+    <p style="font-size: 0.8rem;">Dark theme with gold gradient • All rights reserved</p>
+  </footer>
+
+  <!-- FIXED FLOATING TELEGRAM BUTTON -->
+  <a href="https://t.me/goldbets_tips" target="_blank" class="telegram-float" title="Join Telegram">
+    <i class="fab fa-telegram-plane"></i>
+  </a>
+
+  <script>
+    // EDITABLE AD LINK - Replace this URL with your actual ad link
+    const AD_LINK = "https://example.com/offer?campaign=goldbets";
+    
+    // PREMIUM BET SLIP DETAILS - Edit the HTML inside premiumRevealedState div above
+    // You can change match names, odds, codes etc. in the revealed state section
+
+    // AD LOCK LOGIC: show ad, wait 15 sec, display bet slip
+    const unlockBtn = document.getElementById('unlockAdBtn');
+    const lockedState = document.getElementById('premiumLockedState');
+    const revealedState = document.getElementById('premiumRevealedState');
+    const premiumLockIcon = document.getElementById('premiumLockIcon');
+
+    if (unlockBtn) {
+      unlockBtn.addEventListener('click', function(e) {
+        window.open(AD_LINK, '_blank');
+        
+        unlockBtn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Unlocking in 15s...';
+        unlockBtn.disabled = true;
+        unlockBtn.style.opacity = '0.7';
+
+        setTimeout(function() {
+          lockedState.style.display = 'none';
+          revealedState.style.display = 'block';
+          premiumLockIcon.classList.remove('fa-lock');
+          premiumLockIcon.classList.add('fa-unlock-alt');
+          premiumLockIcon.style.color = '#e5b13b';
+        }, 15000);
+      });
+    }
+
+    // ANIMATED WIN RATE COUNTER
+    function animateCounter(elementId, start, end, duration) {
+      let range = end - start;
+      let increment = range / (duration / 20);
+      let current = start;
+      let counterEl = document.getElementById(elementId);
+      let timer = setInterval(function() {
+        current += increment;
+        if (current >= end) {
+          current = end;
+          clearInterval(timer);
+        }
+        counterEl.innerText = Math.floor(current);
+      }, 20);
+    }
+    
+    window.onload = function() {
+      animateCounter('winCounter', 86, 91, 1800);
+    };
+
+    // COPY TIP CODE FUNCTION
+    function copyTipCode(code) {
+      navigator.clipboard.writeText(code).then(function() {
+        alert(' Bet code copied: ' + code);
+      }).catch(function() {
+        prompt('Manual copy: press Ctrl+C', code);
+      });
+    }
+
+    // WIN/LOSS RESULT BADGE (admin toggle)
+    function setResult(badgeId, status) {
+      let badge = document.getElementById(badgeId);
+      if (status === 'WIN') {
+        badge.innerText = 'WIN';
+        badge.className = 'result-badge badge-win';
+      } else {
+        badge.innerText = 'LOSS';
+        badge.className = 'result-badge badge-loss';
+      }
+    }
+
+    // RESPONSIVE NAVIGATION TOGGLE (burger)
+    const burger = document.getElementById('burgerBtn');
+    const navLinks = document.getElementById('navLinks');
+    if (burger) {
+      burger.addEventListener('click', function() {
+        navLinks.classList.toggle('active');
+      });
+    }
+  </script>
+
+  <!-- 
+    BLOGGER COMPATIBLE INSTRUCTIONS:
+    1. Copy all code above and paste in Blogger HTML Theme Editor.
+    2. Replace AD_LINK with your actual ad network URL.
+    3. Edit premium bet slip details inside the premiumRevealedState div.
+    4. No double hyphen comments used - fully SAX parser compliant.
+  -->
+
+</body>
+</html>
